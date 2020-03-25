@@ -3,64 +3,35 @@ import List from './List'
 
 class ListElements extends React.Component {
 
- activeEditMode = event => {
+  activeEditMode = event => {
     let index = event.target.value;
-    let tempItems = this.props.state;
-    if (tempItems.items[index].editMode === false){
-      tempItems.items[index].editMode = true;
-    } else if ( tempItems.items[index].editMode === true){
-      tempItems.items[index].editMode = false;
+    let tempItems = this.props.items;
+    if (tempItems[index].editMode === false){
+      tempItems[index].editMode = true;
+    } else if ( tempItems[index].editMode === true){
+      tempItems[index].editMode = false;
     }
     this.setState({
-        items: [...this.props.state.items]
-    });
-  };
-
-  up = event => {
-    let currentIndex = event.target.value;
-    let elementUp = this.props.state.items.splice(currentIndex, 1);
-    this.props.state.items.splice(Number(currentIndex)-1, 0, elementUp[0]);
-    
-    this.setState({
-      items: [...this.props.state.items]
-    });
-  };
-
-  down = event => {
-    let currentIndex = event.target.value;
-    let elementDown = this.props.state.items.splice(currentIndex, 1);
-    this.props.state.items.splice(Number(currentIndex)+1, 0, elementDown[0]); 
-    
-    this.setState({
-      items: [...this.props.state.items]
-    });
-  };
-
-  deleteElement = event => {
-    let currentIndex = event.target.value;
-    this.props.state.items.splice(currentIndex, 1);
-
-    this.setState({
-        items: [...this.props.state.items]
+        items: [...this.props.items]
     });
   };
 
   render() {
-        return(
-            <ul>
-                {this.props.state.items.map((item, index) => (
-                <li key={item.id}>
-                {item.item}
-                { this.props.state.items[index].editMode === false && <button value={index} onClick={this.activeEditMode}>Add Sublist</button>}
-                { this.props.state.items[index].editMode === true && <button value={index} onClick={this.activeEditMode}>Remove Sublist</button>}
-                {index !== 0 && <button value={index} onClick={this.up}>Up</button>}
-                { (index !== this.props.state.items.length - 1) && <button value={index} onClick={this.down}>Down</button>}
-                <button value={index} onClick={this.deleteElement}>Delete</button>
-                {item.editMode && ( <ul> Sublist of element "{this.props.state.items[index].item}": <List /> </ul> )}
-                </li>
-                ))}
-            </ul>
-        );
-  };
+    return(
+        <ul>
+            <li key={this.props.item.id}>
+            {this.props.item.item}
+            { this.props.items[this.props.index].editMode === false && <button value={this.props.index} onClick={this.activeEditMode}>Add Sublist</button>}
+            { this.props.items[this.props.index].editMode === true  && <button value={this.props.index} onClick={this.activeEditMode}>Remove Sublist</button>}
+
+            {  this.props.index !== 0 &&<button value={this.props.index} onClick={this.props.up}>Up</button>}
+            { (this.props.index !== this.props.items.length - 1) && <button value={this.props.index} onClick={this.props.down}>Down</button>}
+            <button value={this.props.index} onClick={this.props.deleteElement}>Delete</button>
+            { this.props.item.editMode && ( <ul> Sublist of element "{this.props.items[this.props.index].item}": <List /> </ul> )}
+            </li>
+        </ul>
+    );
+};
+
 }
 export default ListElements

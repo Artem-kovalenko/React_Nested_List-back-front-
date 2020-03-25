@@ -1,7 +1,7 @@
 const mongoose= require('mongoose');
 
 const listElementSchema = mongoose. Schema({
-    text:String,
+    item:String,
     editMode:Boolean
 });
 
