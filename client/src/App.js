@@ -13,25 +13,20 @@ class App extends React.Component {
     };
 
     componentDidMount(){
-        this.getRequest()
+      axios.get('http://localhost:2000/listElement/')
+      .then((response) => {
+        const data = response.data
+        this.setState({items: data});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
-    
-    getRequest = () => {
-         axios.get('http://localhost:2000/listElement/')
-        .then((response) => {
-          const data = response.data
-          this.setState({items: data});
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    
 
 render() {
     return (
       <div>
-        <List data={this.state.items} />
+        {this.state.items.length === 0? null:<List data={this.state.items} />}
       </div>
     );
   }
