@@ -59,7 +59,7 @@ class List extends React.Component {
     }
   };
 
-  up = event => {
+  up = event  => {
 
     let currentIndex = event.target.value;
     // let elementUp = this.state.items.splice(currentIndex, 1);
