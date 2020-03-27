@@ -8,7 +8,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          items: []
+          items: null
         };
     };
 
@@ -26,7 +26,7 @@ class App extends React.Component {
 render() {
     return (
       <div>
-        {this.state.items.length === 0? null:<List data={this.state.items} />}
+        {this.state.items ? <List data={this.state.items} /> : null}
       </div>
     );
   }
