@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 
 
-class App extends React.Component {
+class App extends React.Component  {
 
     constructor(props) {
         super(props);
@@ -12,7 +12,7 @@ class App extends React.Component {
         };
     };
 
-    componentDidMount(){
+    componentDidMount(){ 
       axios.get('http://localhost:2000/listElement/')
       .then((response) => {
         const data = response.data
