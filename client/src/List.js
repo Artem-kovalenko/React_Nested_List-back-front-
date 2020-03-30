@@ -28,29 +28,15 @@ class List extends React.Component {
     axios.post('http://localhost:2000/listElement/', {
       item:this.state.item,
       editMode:false,
-      serialNumber:this.state.items.length
+      serialNumber:this.state.items.length,
+      childs: []
     })
     .then((response) => {
       const postData = response.data
       const newItemsArr = this.state.items.concat(postData)
       this.setState({items: newItemsArr,item: ""});
-
     })
     .catch((error) => {console.log(error)})
-    // if (!this.state.text.length) {
-    //   return;
-    // }
-    // const newItem = {
-    //   id: Date.now(),
-    //   item: this.state.text,
-    //   editMode: false
-    // };
-
-
-    // this.setState({
-    //   items: this.props.data,
-    //   text: ""
-    // });
   };
 
   onKeyUp = event => {
@@ -147,29 +133,82 @@ class List extends React.Component {
     let currentIndex = event.target.value;
 
 // ============== Удаление элемента из БД ================
-    axios.delete(`http://localhost:2000/listElement/${this.state.items[currentIndex]._id}`)
-    .then((response) => {})
-    .catch((error) => {console.log(error)})
+  axios.delete(`http://localhost:2000/listElement/${this.state.items[currentIndex]._id}`)
+  .then((response) => {console.log(response)})
+  .catch((error) => {console.log(error)})
 
+// ============== Переписать индексы элементам. Если индекс элемента больше чем индекс того на который кликаем --- уменьшить на 1
+  // axios.get(`http://localhost:2000/listElement/`)
+  // .then((response) => {console.log(response)})
+  // .catch((error) => {console.log(error)})
+  
+  
 // ============== Удаление элемента на экране ================
+    let clickedItemSerialNumber = this.state.items[currentIndex].serialNumber    
+    let newState = this.state.items.filter(item => item.serialNumber > clickedItemSerialNumber)
+    newState.map((item) => {
+        return item.serialNumber = item.serialNumber-1
+    })
+    console.log(newState)
+   
+
     this.state.items.splice(currentIndex, 1);
-  this.setState({items: [...this.state.items]});
+    this.setState({items: [...this.state.items]});
+
   };
 
   getState = () =>{
     console.log(this.state.items)
-  }
+  };
 
   compareNumeric = (a, b) => {
     if (a.serialNumber > b.serialNumber) return 1; // если первое значение больше второго
-    if (a.serialNumber == b.serialNumber) return 0; // если равны
+    if (a.serialNumber === b.serialNumber) return 0; // если равны
     if (a.serialNumber < b.serialNumber) return -1; // если первое значение меньше второго
+  };
+
+  addSublist = (event) => {
+    // ========= Отображение сабилста на экране
+    let index = event.target.value;
+    let tempItems = this.state.items;
+    if (tempItems[index].editMode === false){
+      tempItems[index].editMode = true;
+    }
+    this.setState({
+      items: [...this.state.items]
+     });
+
+    // ========= Изменение EditMode в БД на true
+     axios.patch(`http://localhost:2000/listElement/${this.state.items[index]._id}`, {
+      editMode: true
+     })
+    .then((response) => {})
+    .catch((error) => {console.log(error)})
   }
-  
+
+  removeSublist = (event) => {
+    // ========= Отображение сабилста на экране
+    let index = event.target.value;
+    let tempItems = this.state.items;
+    if (tempItems[index].editMode === true){
+      tempItems[index].editMode = false;
+    }
+    this.setState({
+      items: [...this.state.items]
+     });
+
+     // ========= Изменение EditMode в БД на true
+     axios.patch(`http://localhost:2000/listElement/${this.state.items[index]._id}`, {
+      editMode: false
+     })
+    .then((response) => {})
+    .catch((error) => {console.log(error)})
+  }
+
   render() {
     return ( 
       <ul>
-      { this.state.items.sort(this.compareNumeric).map((item, index ) => (
+      {this.state.items !== undefined &&  this.state.items.sort(this.compareNumeric).map((item, index ) => (
         <ListElements
          key={item._id}
          item = {item}
@@ -178,6 +217,8 @@ class List extends React.Component {
          up = {this.up}
          down = {this.down}
          deleteElement = {this.deleteElement}
+         addSublist = {this.addSublist}
+         removeSublist = {this.removeSublist}
          />) )}
         <input autoFocus onKeyUp={this.onKeyUp} onChange={this.handleChange} value={this.state.item}></input>
         <button onClick={this.addElement}>Add</button>
