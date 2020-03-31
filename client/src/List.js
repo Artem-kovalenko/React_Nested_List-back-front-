@@ -3,14 +3,13 @@ import ListElements from "./ListElements"
 import axios from 'axios';
 
 class List extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       items: [],
       item: "",
-
     };
+    this.input = React.createRef();
   };
   
   componentDidMount() {
@@ -24,6 +23,7 @@ class List extends React.Component {
   };
 
   addElement = () => {
+    if (this.input.current.value.trim() !== "") {
      // ============== Добавление элемента в БД ================
     axios.post('http://localhost:2000/listElement/', {
       item:this.state.item,
@@ -38,6 +38,7 @@ class List extends React.Component {
     })
     .catch((error) => {console.log(error)})
   };
+}
 
   onKeyUp = event => {
     if (event.keyCode === 13) {
@@ -220,7 +221,7 @@ class List extends React.Component {
          addSublist = {this.addSublist}
          removeSublist = {this.removeSublist}
          />) )}
-        <input autoFocus onKeyUp={this.onKeyUp} onChange={this.handleChange} value={this.state.item}></input>
+        <input ref={this.input} autoFocus onKeyUp={this.onKeyUp} onChange={this.handleChange} value={this.state.item}></input>
         <button onClick={this.addElement}>Add</button>
         <button onClick={this.getState}>Show State</button>
       </ul>

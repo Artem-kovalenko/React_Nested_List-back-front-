@@ -18,7 +18,7 @@ class ListElements extends React.Component {
             { (this.props.index !== this.props.items.length - 1) && <button value={this.props.index} onClick={this.props.down}>Down</button>}
             <button value={this.props.index} onClick={this.props.deleteElement}>Delete</button>
                
-            { this.props.item.editMode && ( <ul> Sublist of element "{this.props.items[this.props.index].item}": <List /> </ul> )}
+            { this.props.item.editMode && ( <ul> Sublist of element "{this.props.items[this.props.index].item}": <List childs={this.props.item.childs} /> </ul> )}
             </li>
         </ul>
     );
